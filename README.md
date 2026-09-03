@@ -1,4 +1,4 @@
-# Agenda Surat BPS — Prototype MVP v0.1
+# SIGAS-BPS — Prototype MVP UI v0.2
 
 Prototype web untuk mengubah alur Excel agenda surat menjadi aplikasi berbasis database.
 
@@ -178,3 +178,11 @@ Generator menggunakan transaksi database dan `SELECT ... FOR UPDATE` pada row se
 - Disposisi.
 - Template dokumen dan print/PDF.
 - Deployment ke server internal BPS setelah review keamanan.
+
+
+## UI v0.2
+
+- Redesign dark modern terinspirasi referensi dashboard internal BPS.
+- Identitas visual menggunakan warna biru, oranye, dan hijau BPS serta logo BPS pada sidebar/login.
+- Sidebar responsif, top search, theme dark/light, dashboard cards, live preview nomor, modern table/filter, detail agenda, dan admin user UI.
+- Tidak mengubah schema database v0.1.
