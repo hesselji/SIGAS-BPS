@@ -1,0 +1,1 @@
+</main><footer class="footer"><div><strong>Agenda Surat BPS — Prototype v0.1</strong><span>Data & aturan penomoran masih dummy/working set sampai dikonfirmasi pembimbing lapangan.</span></div><span><?=date('Y')?> • PHP + MySQL</span></footer><script src="/assets/js/app.js?v=1" defer></script></body></html>
