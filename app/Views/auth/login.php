@@ -1,1 +1,8 @@
-<section class="auth-wrap"><div class="auth-card"><span class="eyebrow">PROTOTYPE INTERNAL</span><h1>Agenda Surat BPS</h1><p>Masuk untuk mengajukan dan mengelola nomor agenda surat keluar.</p><form method="post" action="/login" class="stack"><?=csrf_field()?><label>Email<input type="email" name="email" value="<?=old('email')?>" placeholder="nama@demo.local" required autofocus></label><label>Password<div class="password-wrap"><input id="passwordInput" type="password" name="password" placeholder="Password" required><button type="button" id="passwordToggle" class="eye" aria-label="Tampilkan password">👁</button></div></label><button class="btn primary wide" type="submit">Masuk</button></form><div class="demo-note"><b>Akun demo prototype</b><span>Admin: admin@demo.local / Admin123!</span><span>User: user@demo.local / User123!</span></div></div></section>
+<section class="auth-wrap">
+    <div class="auth-card"><span class="eyebrow">PROTOTYPE INTERNAL</span>
+        <h1>Agenda Surat BPS</h1>
+        <p>Masuk untuk mengajukan dan mengelola nomor agenda surat keluar.</p>
+        <form method="post" action="/login" class="stack"><?= csrf_field() ?><label>Email<input type="email" name="email" value="<?= old('email') ?>" placeholder="nama@demo.local" required autofocus></label><label>Password<div class="password-wrap"><input id="passwordInput" type="password" name="password" placeholder="Password" required><button type="button" id="passwordToggle" class="eye" aria-label="Tampilkan password">👁</button></div></label><button class="btn primary wide" type="submit">Masuk</button></form>
+        
+    </div>
+</section>
