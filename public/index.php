@@ -25,7 +25,10 @@ try { Env::load(dirname(__DIR__).'/.env'); }
 catch(Throwable $e){ http_response_code(500); exit('<h2>Konfigurasi belum siap</h2><p>Copy <code>.env.example</code> menjadi <code>.env</code> dan isi koneksi database.</p>'); }
 
 $router=new Router();
-$router->get('/', fn()=>header('Location: /dashboard'));
+$router->get('/', function (): void {
+    header('Location: /login');
+    exit;
+});
 $router->get('/login',[AuthController::class,'loginForm']);
 $router->post('/login',[AuthController::class,'login']);
 $router->post('/logout',[AuthController::class,'logout']);
