@@ -35,7 +35,7 @@ final class OutgoingLetter
 
     public static function find(int $id): ?array
     {
-        $stmt=Database::connection()->prepare('SELECT ol.*,wt.name work_team_name,u.name requester_name,lt.name letter_type_name,cby.name cancelled_by_name FROM outgoing_letters ol JOIN work_teams wt ON wt.id=ol.work_team_id JOIN users u ON u.id=ol.requested_by JOIN letter_types lt ON lt.id=ol.letter_type_id LEFT JOIN users cby ON cby.id=ol.cancelled_by WHERE ol.id=?');
+        $stmt=Database::connection()->prepare('SELECT ol.*,wt.name work_team_name,u.name requester_name,lt.name letter_type_name,cby.name cancelled_by_name,cg.name classification_group_name,ci.name classification_item_name FROM outgoing_letters ol JOIN work_teams wt ON wt.id=ol.work_team_id JOIN users u ON u.id=ol.requested_by JOIN letter_types lt ON lt.id=ol.letter_type_id LEFT JOIN users cby ON cby.id=ol.cancelled_by LEFT JOIN classification_groups cg ON cg.code=ol.classification_parent LEFT JOIN classification_items ci ON ci.group_code=ol.classification_parent AND ci.code=ol.classification_child WHERE ol.id=?');
         $stmt->execute([$id]);$row=$stmt->fetch();
         if (!$row) return null;
         if (!Auth::isAdmin() && (int)$row['requested_by'] !== (int)Auth::id()) return null;

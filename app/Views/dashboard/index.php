@@ -110,7 +110,7 @@ $maxTeam = $byTeam ? max(array_map(fn($r)=>(int)$r['total'], $byTeam)) : 1;
             <a class="quick-card quick-blue" href="/letters/create"><span><?= ui_icon('mail-plus') ?></span><div><b>Generate Nomor</b><small>Buat nomor agenda baru</small></div><?= ui_icon('arrow-right') ?></a>
             <a class="quick-card quick-green" href="/letters"><span><?= ui_icon('archive') ?></span><div><b>Agenda Surat</b><small>Lihat seluruh record</small></div><?= ui_icon('arrow-right') ?></a>
             <?php if (\App\Core\Auth::isAdmin()): ?><a class="quick-card quick-orange" href="/admin/users"><span><?= ui_icon('users') ?></span><div><b>Kelola Pengguna</b><small>Atur akun akses</small></div><?= ui_icon('arrow-right') ?></a><?php endif; ?>
-            <div class="quick-card quick-muted"><span><?= ui_icon('database') ?></span><div><b>Master Data</b><small>Segera dikembangkan</small></div><span class="soon-badge">Soon</span></div>
+            <?php if (\App\Core\Auth::isAdmin()): ?><a class="quick-card quick-muted" href="/admin/classifications"><span><?= ui_icon('database') ?></span><div><b>Katalog KKA</b><small>613 kode klasifikasi</small></div><?= ui_icon('arrow-right') ?></a><?php endif; ?>
         </div>
     </article>
 </section>

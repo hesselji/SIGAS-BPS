@@ -19,7 +19,7 @@ $appName = Env::get('APP_NAME', 'SIGAS-BPS');
     <meta name="theme-color" content="#0b1118">
     <title><?= e($appName) ?></title>
     <link rel="icon" href="/assets/images/bps-logo.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/style.css?v=20260904-2">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20260905-3">
 </head>
 <body class="<?= $me ? 'app-body' : 'auth-body' ?>">
 <?php if ($me): ?>
@@ -53,6 +53,12 @@ $appName = Env::get('APP_NAME', 'SIGAS-BPS');
                 <span class="nav-section-label nav-section-spaced">Administrasi</span>
                 <a class="nav-item<?= nav_active('/admin/users') ?>" href="/admin/users">
                     <span class="nav-icon"><?= ui_icon('users') ?></span><span>Pengguna</span>
+                </a>
+                <a class="nav-item<?= nav_active('/admin/classifications') ?>" href="/admin/classifications">
+                    <span class="nav-icon"><?= ui_icon('archive') ?></span><span>Katalog KKA</span>
+                </a>
+                <a class="nav-item<?= nav_active('/admin/numbering-rules') ?>" href="/admin/numbering-rules">
+                    <span class="nav-icon"><?= ui_icon('settings') ?></span><span>Aturan Nomor</span>
                 </a>
             <?php endif; ?>
         </nav>

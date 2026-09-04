@@ -25,7 +25,7 @@
             <div><span>Sifat Surat</span><strong><span class="sensitivity-badge sens-<?= strtolower($letter['sensitivity']) ?>"><?= e(sensitivity_label($letter['sensitivity'])) ?></span></strong></div>
             <div><span>Ada Anggaran</span><strong><?= $letter['uses_budget']==='Y'?'Ya':'Tidak' ?></strong></div>
             <div><span>Jenis Arsip</span><strong><?= e(ucwords(strtolower($letter['archive_type']))) ?></strong></div>
-            <div><span>Klasifikasi</span><strong class="classification-code"><?= e($letter['classification_code']) ?></strong></div>
+            <div><span>Klasifikasi</span><strong class="classification-code"><?= e($letter['classification_code']) ?></strong><small class="table-subtext"><?= e(($letter['classification_group_name'] ?? '').(($letter['classification_item_name'] ?? '') ? ' • '.($letter['classification_item_name'] ?? '') : '')) ?></small></div>
             <div class="detail-span-2"><span>Tujuan Surat</span><strong><?= e($letter['recipient']) ?></strong></div>
             <div class="detail-span-2"><span>Perihal</span><strong><?= e($letter['subject']) ?></strong></div>
             <?php if($letter['notes']):?><div class="detail-span-2"><span>Catatan</span><p><?= nl2br(e($letter['notes'])) ?></p></div><?php endif;?>

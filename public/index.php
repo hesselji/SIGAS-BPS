@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 session_start();
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
+ini_set('display_errors', '0');
 
 spl_autoload_register(function(string $class): void {
     $prefix='App\\';
@@ -19,6 +19,7 @@ use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\OutgoingLetterController;
 use App\Controllers\AdminUserController;
+use App\Controllers\AdminMasterController;
 
 try { Env::load(dirname(__DIR__).'/.env'); }
 catch(Throwable $e){ http_response_code(500); exit('<h2>Konfigurasi belum siap</h2><p>Copy <code>.env.example</code> menjadi <code>.env</code> dan isi koneksi database.</p>'); }
@@ -35,7 +36,13 @@ $router->post('/letters',[OutgoingLetterController::class,'store']);
 $router->get('/letters/{id}',[OutgoingLetterController::class,'show']);
 $router->post('/letters/{id}/cancel',[OutgoingLetterController::class,'cancel']);
 $router->get('/api/classifications',[OutgoingLetterController::class,'classifications']);
+$router->get('/api/classification-groups',[OutgoingLetterController::class,'classificationGroups']);
+$router->get('/api/classification-items',[OutgoingLetterController::class,'classificationItems']);
 $router->get('/admin/users',[AdminUserController::class,'index']);
 $router->get('/admin/users/create',[AdminUserController::class,'create']);
 $router->post('/admin/users',[AdminUserController::class,'store']);
+$router->get('/admin/numbering-rules',[AdminMasterController::class,'numbering']);
+$router->post('/admin/numbering-rules/{id}',[AdminMasterController::class,'updateRule']);
+$router->post('/admin/letter-types/{id}',[AdminMasterController::class,'updateLetterType']);
+$router->get('/admin/classifications',[AdminMasterController::class,'classifications']);
 $router->dispatch($_SERVER['REQUEST_METHOD'],$_SERVER['REQUEST_URI']);

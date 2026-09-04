@@ -1,96 +1,94 @@
-# SIGAS-BPS — Prototype MVP UI v0.2
+# SIGAS-BPS v0.3 - Full KKA Catalogue
 
-Prototype web untuk mengubah alur Excel agenda surat menjadi aplikasi berbasis database.
+**SIGAS-BPS** adalah prototype Sistem Informasi Generate Agenda Surat untuk project Magang Mandiri di BPS Kota Palangka Raya.
 
-> **PENTING:** rule penomoran, hak akses surat rahasia, sequence 62710/62711, dan master KKA pada versi ini masih **working set/dummy** berdasarkan hasil pemahaman awal terhadap Excel `Agenda Surat 2026.xlsx` dan penjelasan pembimbing lapangan. Jangan gunakan sebagai sistem produksi sebelum rule dikonfirmasi.
+Versi **v0.3** berfokus pada pengembangan engine penomoran dan master Kode Klasifikasi Arsip (KKA). Katalog klasifikasi diimpor dari dokumen **Kode.pdf** yang diberikan untuk project.
 
 ## Teknologi
 
-- PHP 8.2+ Native OOP, pola MVC ringan
+- PHP 8.2+ Native OOP/MVC
 - MySQL / MariaDB (InnoDB)
-- PDO prepared statements
-- HTML + CSS responsive
-- Vanilla JavaScript `fetch()`
-- Session authentication + CSRF
+- HTML + CSS
+- Vanilla JavaScript
+- Session authentication + CSRF + prepared statement
 - Database transaction + row locking (`FOR UPDATE`) untuk sequence nomor
 
-Alasan dipilih untuk MVP: mudah dijalankan di Windows/XAMPP, tidak membutuhkan Composer/NPM, gampang dipindahkan ke server internal/shared hosting, dan cukup untuk membuktikan alur form → rule → nomor otomatis → database → dashboard.
+## Fitur v0.3
 
-## Fitur MVP
+- Login Admin / User
+- Dashboard agenda
+- Generate nomor surat keluar
+- Sequence otomatis dan aman terhadap request bersamaan
+- Katalog KKA penuh dari `Kode.pdf`
+- 19 kelompok klasifikasi tercatat
+- 613 item kode klasifikasi terdata
+- Klasifikasi dipisahkan menjadi Substantif dan Fasilitatif
+- Kode numerik 1-3 digit dinormalisasi ke tiga digit untuk KKA (`0 -> 000`, `10 -> 010`, `21 -> 021`)
+- Kode 4 digit tetap dipertahankan (`1010`, `1011`, dst.)
+- Live preview nomor mengikuti pattern jenis surat
+- Working rule `62710`, `62711`, dan Form Permintaan
+- Admin dapat mengubah pattern rule tanpa mengedit PHP
+- Admin dapat mengubah mapping Jenis Surat -> Numbering Rule
+- Admin dapat menelusuri katalog KKA
+- Agenda, search/filter, detail, cancel nomor, audit log
+- Login form tidak lagi mengisi akun demo otomatis
 
-- Login ADMIN dan USER
-- Generate nomor surat keluar otomatis
-- Nomor unik dan sequence +1 per numbering rule/tahun
-- Kondisi `Ada Anggaran` + `Jenis Arsip` menghasilkan scope YF/YS/TF/TS
-- Cascading KKA Level 2 → Level 3
-- Numbering rule configurable di database
-- Record agenda surat keluar
-- Search/filter
-- Dashboard statistik
-- Pembatalan nomor (ADMIN) tanpa menghapus record
-- Audit log
-- User management sederhana
-- Responsive mobile
+## Penting: status rule penomoran
 
-## Akun Demo
+`Kode.pdf` cukup untuk membangun **master klasifikasi KKA**, tetapi dokumen tersebut tidak sendiri menetapkan seluruh mapping jenis surat ke kode unit `62710/62711` atau seluruh variasi format nomor.
 
-- Admin: `admin@demo.local` / `Admin123!`
-- User: `user@demo.local` / `User123!`
+Karena itu v0.3 melakukan dua hal:
 
-## Setup Lokal — XAMPP (disarankan)
+1. Mengimplementasikan katalog klasifikasi secara penuh sesuai data yang tersedia.
+2. Menjadikan rule penomoran **configurable oleh Admin**, sehingga setelah BPS mengonfirmasi mapping resmi, sistem dapat disesuaikan melalui menu **Administrasi -> Aturan Nomor** tanpa merombak source code.
 
-### 1. Persiapan
+## Fresh Install
 
-Pastikan XAMPP terpasang. Start **MySQL** dari XAMPP Control Panel. Apache tidak wajib jika memakai PHP built-in server.
+### 1. Start MySQL
 
-Cek PHP:
+XAMPP Control Panel:
 
-```bat
-C:\xampp\php\php.exe -v
+```text
+MySQL -> Start
 ```
 
 ### 2. Buat database
 
-Buka `http://localhost/phpmyadmin` → **New** → buat database:
-
-```text
-agenda_surat_bps
+```sql
+CREATE DATABASE agenda_surat_bps
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
 ```
 
-Collation: `utf8mb4_unicode_ci`.
+### 3. Import schema
 
-### 3. Import schema + seed
-
-Pilih database `agenda_surat_bps` → **Import** → pilih:
+Import:
 
 ```text
 database/mysql_schema_seed.sql
 ```
 
-Setelah berhasil harus ada tabel:
+melalui phpMyAdmin, atau:
 
-- work_teams
-- users
-- numbering_rules
-- letter_types
-- letter_sensitivities
-- archive_types
-- classifications
-- number_sequences
-- outgoing_letters
-- audit_logs
+```powershell
+C:\xampp\mysql\bin\mysql.exe -u root agenda_surat_bps < database\mysql_schema_seed.sql
+```
 
 ### 4. Buat `.env`
 
-Copy:
-
-```bat
+```powershell
 copy .env.example .env
 ```
 
-Untuk XAMPP default, isi sudah cocok:
+Default XAMPP:
 
 ```env
+APP_NAME="SIGAS-BPS"
+APP_ENV=local
+APP_URL=http://127.0.0.1:8080
+APP_DEBUG=true
+
+DB_DRIVER=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=agenda_surat_bps
@@ -98,13 +96,9 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Jika MySQL kamu memakai password, isi `DB_PASSWORD`.
+### 5. Jalankan
 
-### 5. Jalankan aplikasi
-
-Dari terminal di root project:
-
-```bat
+```powershell
 C:\xampp\php\php.exe -S 127.0.0.1:8080 -t public public\router.php
 ```
 
@@ -114,75 +108,190 @@ Buka:
 http://127.0.0.1:8080/login
 ```
 
-## Cara Demo MVP
+## Upgrade dari v0.2 tanpa menghapus agenda lama
 
-1. Login sebagai `user@demo.local`.
-2. Klik **Generate Nomor**.
-3. Pilih jenis surat, tim, SRIKANDI/Non Srikandi, tanggal, sifat.
-4. Pilih **Ada Anggaran** dan **Jenis Arsip**.
-5. Sistem menampilkan scope `YF/YS/TF/TS`.
-6. Pilihan KKA Level 2 dimuat dari database.
-7. Pilih KKA Level 2, lalu KKA Level 3.
-8. Isi tujuan dan perihal.
-9. Submit → server generate nomor unik dan menyimpan record.
-10. Login Admin untuk melihat semua record dan pembatalan nomor.
+Jangan import `mysql_schema_seed.sql` ke database yang sudah memiliki data agenda karena file fresh install melakukan DROP TABLE.
 
-Contoh working rule:
+Untuk upgrade database v0.2, import hanya:
 
 ```text
-B-001/62710/KU.000/2026
+database/migrations/20260905_v03_full_classifications.sql
 ```
 
-Komponen:
+Melalui terminal:
 
-- `B` = prefix sifat surat
-- `001` = sequence
-- `62710` = unit code pada numbering rule
-- `KU.000` = klasifikasi
-- `2026` = tahun surat
+```powershell
+C:\xampp\mysql\bin\mysql.exe -u root agenda_surat_bps < database\migrations\20260905_v03_full_classifications.sql
+```
 
-## Kenapa sequence aman dari duplicate?
+Migration tersebut:
 
-Generator menggunakan transaksi database dan `SELECT ... FOR UPDATE` pada row sequence. Dua user yang meminta nomor bersamaan tidak membaca sequence tanpa lock yang sama; transaksi pertama menyelesaikan nomor lebih dulu, lalu transaksi kedua memperoleh nomor berikutnya.
+- membuat tabel `classification_groups` dan `classification_items`;
+- memasukkan katalog KKA penuh;
+- menambah/update working numbering rules;
+- menambah/update jenis surat;
+- tidak menghapus record `outgoing_letters` yang sudah ada.
 
-## Hal yang WAJIB dikonfirmasi sebelum produksi
+## Akun demo
 
-1. Apakah sequence satu untuk semua surat atau terpisah per jenis/rule?
-2. Kapan sequence reset?
-3. Arti dan kondisi resmi 62710 vs 62711.
-4. Format final setiap jenis surat termasuk Form Permintaan.
-5. Prefix resmi untuk Biasa/Penting/Rahasia/Sangat Rahasia.
-6. Apakah SRIKANDI memengaruhi penomoran atau hanya metadata?
-7. Siapa yang boleh melihat Rahasia/Sangat Rahasia?
-8. Apakah nomor batal tetap dianggap terpakai? Prototype: **ya**.
-9. Apakah user biasa boleh melihat surat biasa milik user lain?
-10. Master KKA final dan relasi kondisi YF/YS/TF/TS.
+Admin:
 
-## Catatan Security
+```text
+admin@demo.local
+Admin123!
+```
 
-- Password di-hash BCRYPT.
-- Query memakai prepared statement.
-- Generate nomor menggunakan transaction + locking.
-- CSRF diterapkan pada POST.
-- Pembatalan hanya ADMIN pada prototype.
-- Record batal tidak dihapus.
-- `.env` jangan di-commit.
+User:
 
-## Tahap Berikutnya
+```text
+user@demo.local
+User123!
+```
 
-- Konfirmasi requirement dengan pembimbing lapangan.
-- Import master KKA lengkap dari Excel ke database.
-- Master data UI untuk admin.
-- Role/permission lebih granular.
-- Surat masuk.
-- Disposisi.
-- Template dokumen dan print/PDF.
-- Deployment ke server internal BPS setelah review keamanan.
+Akun ini hanya untuk prototype. Hapus/ganti sebelum production.
 
+## Katalog KKA
 
-## UI v0.2
+Admin dapat membuka:
 
-- Redesign dark modern terinspirasi referensi dashboard internal BPS.
-- Identitas visual menggunakan warna biru, oranye, dan hijau BPS serta logo BPS pada sidebar/login.
-- Sidebar responsif, top search, theme dark/light, dashboard cards, live preview nomor, modern table/filter, detail agenda, dan admin user UI.
-- Tidak mengubah schema database v0.1.
+```text
+Administrasi -> Katalog KKA
+```
+
+Data machine-readable juga tersedia di:
+
+```text
+database/classification_catalog.json
+```
+
+Ringkasan katalog:
+
+### Substantif
+
+- PS - Perumusan Kebijakan di Bidang Statistik
+- SS - Sensus Penduduk, Sensus Pertanian dan Sensus Ekonomi
+- VS - Survei
+- KS - Konsolidasi Data Statistik
+- ES - Evaluasi dan Pelaporan (dicatat tetapi nonaktif karena rincian numerik tidak tersedia pada bagian utama dokumen sumber)
+
+### Fasilitatif
+
+- KU - Keuangan
+- KP - Kepegawaian
+- PR - Perencanaan
+- HK - Hukum
+- OT - Organisasi dan Tata Laksana
+- HM - Hubungan Masyarakat
+- KA - Kearsipan
+- RT - Kerumahtanggaan
+- PL - Perlengkapan
+- DL - Pendidikan dan Latihan
+- PK - Kepustakaan
+- IF - Informatika
+- PW - Pengawasan
+- TS - Transformasi Statistik
+
+## Rule Penomoran
+
+Working rule seed:
+
+```text
+MAIN_62710
+{PREFIX}-{SEQ3}/{UNIT}/{KKA}/{YEAR}
+
+SUBBAG_62711
+{PREFIX}-{SEQ3}/{UNIT}/{KKA}/{YEAR}
+
+FORM_PERMINTAAN
+{SEQ3}/{UNIT}/{KKA}/{YEAR}
+```
+
+Supported token:
+
+```text
+{PREFIX}
+{SEQ}
+{SEQ3}
+{SEQ4}
+{UNIT}
+{KKA}
+{YEAR}
+```
+
+Contoh:
+
+```text
+Sifat       = Biasa
+Sequence    = 7
+Unit        = 62710
+KKA         = KU.261
+Tahun       = 2026
+
+B-007/62710/KU.261/2026
+```
+
+## Struktur utama
+
+```text
+app/
+├── Controllers/
+├── Core/
+├── Models/
+├── Services/
+└── Views/
+
+database/
+├── mysql_schema_seed.sql
+├── classification_catalog.json
+└── migrations/
+    └── 20260905_v03_full_classifications.sql
+
+public/
+├── assets/
+│   ├── css/
+│   ├── images/
+│   └── js/
+├── index.php
+└── router.php
+```
+
+## Keamanan dan data BPS
+
+- Jangan commit `.env`.
+- Jangan menyimpan password production di repository.
+- Jangan upload data responden atau dokumen rahasia ke GitHub.
+- Gunakan dummy/anonymized data selama development jika data sebenarnya sensitif.
+- Nomor yang dibatalkan tidak dihapus dan tidak digunakan ulang.
+
+## Git workflow yang disarankan
+
+```text
+PULL -> BRANCH -> CODE -> TEST -> COMMIT -> PUSH -> PR -> REVIEW -> MERGE
+```
+
+Contoh:
+
+```powershell
+git checkout main
+git pull origin main
+git checkout -b feature/full-kka
+```
+
+Setelah tes:
+
+```powershell
+git add .
+git commit -m "Implement full KKA catalogue and dynamic numbering rules"
+git push -u origin feature/full-kka
+```
+
+Kemudian buat Pull Request ke `main`.
+
+## Dokumen pengembangan
+
+Lihat:
+
+```text
+docs/V03_FULL_KKA.md
+docs/REQUIREMENT_CONFIRMATION.md
+```

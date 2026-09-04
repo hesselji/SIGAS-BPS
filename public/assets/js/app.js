@@ -97,7 +97,7 @@
     });
   });
 
-  // Generate number form: cascading KKA + live preview
+  // Generate number form: full KKA catalogue + dynamic numbering preview
   const budget = $('#usesBudget');
   const archive = $('#archiveType');
   const parent = $('#classificationParent');
@@ -107,72 +107,106 @@
   const sensitivity = $('#sensitivity');
   const letterDate = $('#letterDate');
   const numberPreview = $('#numberPreview');
+  const rulePreviewText = $('#rulePreviewText');
 
-  if (budget && archive && parent && child) {
-    const getScope = () => budget.value && archive.value ? budget.value + (archive.value === 'FASILITATIF' ? 'F' : 'S') : '';
-    const escapeHtml = (v) => String(v).replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  if (archive && parent && child) {
+    const escapeHtml = (v) => String(v ?? '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
     const fill = (select, rows, placeholder, selected = '') => {
-      select.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` + rows.map(r => `<option value="${escapeHtml(r.code)}" ${r.code === selected ? 'selected' : ''}>${escapeHtml(r.code)} — ${escapeHtml(r.name)}</option>`).join('');
+      select.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` + rows.map((r) => {
+        const description = r.description ? ` data-description="${escapeHtml(r.description)}"` : '';
+        return `<option value="${escapeHtml(r.code)}"${description} ${r.code === selected ? 'selected' : ''}>${escapeHtml(r.code)} — ${escapeHtml(r.name)}</option>`;
+      }).join('');
       select.disabled = false;
     };
-    const refreshNumberPreview = () => {
-      if (!numberPreview) return;
+
+    const previewTokens = () => {
       const typeOption = typeSelect?.selectedOptions?.[0];
       const sensOption = sensitivity?.selectedOptions?.[0];
       const prefix = sensOption?.dataset?.prefix || '?';
       const unit = typeOption?.dataset?.unit || '62710';
-      const kka = parent.value && child.value ? `${parent.value}.${child.value}` : 'KKA.000';
-      let year = new Date().getFullYear();
-      if (letterDate?.value) year = letterDate.value.slice(0,4);
-      $('.np-prefix', numberPreview).textContent = `${prefix}-???`;
-      $('.np-unit', numberPreview).textContent = unit;
-      $('.np-kka', numberPreview).textContent = kka;
-      $('.np-year', numberPreview).textContent = year;
+      const group = parent.value || 'KKA';
+      const code = child.value || '000';
+      let year = new Date().getFullYear().toString();
+      if (letterDate?.value) year = letterDate.value.slice(0, 4);
+      return {
+        '{PREFIX}': prefix,
+        '{SEQ}': '???',
+        '{SEQ3}': '???',
+        '{SEQ4}': '????',
+        '{UNIT}': unit,
+        '{KKA}': `${group}.${code}`,
+        '{YEAR}': year,
+      };
     };
-    async function loadParents(restoreChild = true) {
-      const scope = getScope();
-      if (scopePreview) scopePreview.textContent = scope || '—';
-      parent.disabled = true; child.disabled = true;
-      parent.innerHTML = '<option value="">Pilih kondisi dahulu</option>';
-      child.innerHTML = '<option value="">Pilih KKA level 2 dahulu</option>';
+
+    const refreshNumberPreview = () => {
+      if (!numberPreview) return;
+      const typeOption = typeSelect?.selectedOptions?.[0];
+      const pattern = typeOption?.dataset?.pattern || '{PREFIX}-{SEQ3}/{UNIT}/{KKA}/{YEAR}';
+      const rule = typeOption?.dataset?.rule || '—';
+      const tokens = previewTokens();
+      let preview = pattern;
+      Object.entries(tokens).forEach(([token, value]) => { preview = preview.split(token).join(value); });
+      numberPreview.textContent = preview;
+      if (rulePreviewText) {
+        rulePreviewText.textContent = typeOption?.value ? `Rule aktif: ${rule} • ${pattern}` : 'Pilih jenis surat untuk melihat pattern yang digunakan.';
+      }
+    };
+
+    async function loadGroups(restoreChild = true) {
+      const archiveType = archive.value;
+      if (scopePreview) scopePreview.textContent = archiveType || '—';
+      parent.disabled = true;
+      child.disabled = true;
+      parent.innerHTML = '<option value="">Pilih jenis arsip dahulu</option>';
+      child.innerHTML = '<option value="">Pilih kelompok KKA dahulu</option>';
       refreshNumberPreview();
-      if (!scope) return;
+      if (!archiveType) return;
+
       try {
-        const res = await fetch(`/api/classifications?scope=${encodeURIComponent(scope)}`, {headers:{'Accept':'application/json'}});
+        const res = await fetch(`/api/classification-groups?archive_type=${encodeURIComponent(archiveType)}`, {headers:{'Accept':'application/json'}});
         const json = await res.json();
-        if (!json.success) throw new Error(json.message || 'Gagal memuat klasifikasi');
+        if (!json.success) throw new Error(json.message || 'Gagal memuat kelompok klasifikasi');
         const oldParent = parent.dataset.old || '';
-        fill(parent, json.data, 'Pilih KKA level 2', oldParent);
+        fill(parent, json.data, 'Pilih kelompok KKA', oldParent);
         if (oldParent && restoreChild) {
-          await loadChildren(oldParent, child.dataset.old || '');
-          parent.dataset.old = ''; child.dataset.old = '';
+          await loadItems(oldParent, child.dataset.old || '');
+          parent.dataset.old = '';
+          child.dataset.old = '';
         }
       } catch (err) {
         parent.innerHTML = '<option value="">Gagal memuat data</option>';
       }
     }
-    async function loadChildren(parentValue, selected = '') {
+
+    async function loadItems(groupCode, selected = '') {
       child.disabled = true;
       child.innerHTML = '<option value="">Memuat...</option>';
       refreshNumberPreview();
-      if (!parentValue) { child.innerHTML = '<option value="">Pilih KKA level 2 dahulu</option>'; return; }
+      if (!groupCode) {
+        child.innerHTML = '<option value="">Pilih kelompok KKA dahulu</option>';
+        return;
+      }
       try {
-        const res = await fetch(`/api/classifications?scope=${encodeURIComponent(getScope())}&parent=${encodeURIComponent(parentValue)}`, {headers:{'Accept':'application/json'}});
+        const res = await fetch(`/api/classification-items?group=${encodeURIComponent(groupCode)}`, {headers:{'Accept':'application/json'}});
         const json = await res.json();
-        if (!json.success) throw new Error(json.message || 'Gagal memuat klasifikasi');
-        fill(child, json.data, 'Pilih KKA level 3', selected);
+        if (!json.success) throw new Error(json.message || 'Gagal memuat kode klasifikasi');
+        fill(child, json.data, 'Pilih kode klasifikasi', selected);
         refreshNumberPreview();
       } catch (err) {
         child.innerHTML = '<option value="">Gagal memuat data</option>';
       }
     }
-    budget.addEventListener('change', () => loadParents(false));
-    archive.addEventListener('change', () => loadParents(false));
-    parent.addEventListener('change', () => loadChildren(parent.value));
+
+    archive.addEventListener('change', () => loadGroups(false));
+    parent.addEventListener('change', () => loadItems(parent.value));
     child.addEventListener('change', refreshNumberPreview);
+    budget?.addEventListener('change', refreshNumberPreview);
     typeSelect?.addEventListener('change', refreshNumberPreview);
     sensitivity?.addEventListener('change', refreshNumberPreview);
     letterDate?.addEventListener('change', refreshNumberPreview);
-    if (getScope()) loadParents(true); else refreshNumberPreview();
+
+    if (archive.value) loadGroups(true); else refreshNumberPreview();
   }
 })();

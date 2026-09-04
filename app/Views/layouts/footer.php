@@ -9,6 +9,6 @@
 <?php else: ?>
     </main>
 <?php endif; ?>
-<script src="/assets/js/app.js?v=20260904-2" defer></script>
+<script src="/assets/js/app.js?v=20260905-3" defer></script>
 </body>
 </html>
