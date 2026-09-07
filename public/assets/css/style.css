@@ -3414,3 +3414,104 @@ html[data-theme="light"] .number-preview {
         display: none;
     }
 }
+
+/* =========================================================
+   USER MANAGEMENT ACTIONS
+========================================================= */
+
+.users-table {
+    min-width: 1180px;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.user-action-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.user-actions .btn {
+    min-height: 30px;
+    padding: 6px 9px;
+    font-size: 9px;
+}
+
+.user-actions .btn .ui-icon {
+    width: 13px;
+    height: 13px;
+}
+
+
+/* Bekukan */
+
+.btn-freeze {
+    color: #ffb04e;
+    background: rgba(242, 140, 24, 0.08);
+    border-color: rgba(242, 140, 24, 0.22);
+}
+
+.btn-freeze:hover {
+    color: #ffc170;
+    background: rgba(242, 140, 24, 0.14);
+    border-color: rgba(242, 140, 24, 0.34);
+}
+
+
+/* Aktifkan */
+
+.btn-activate {
+    color: #82d94c;
+    background: rgba(104, 190, 43, 0.08);
+    border-color: rgba(104, 190, 43, 0.22);
+}
+
+.btn-activate:hover {
+    color: #9be469;
+    background: rgba(104, 190, 43, 0.14);
+    border-color: rgba(104, 190, 43, 0.34);
+}
+
+
+/* Label akun sendiri */
+
+.self-account-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    color: var(--muted);
+
+    background: var(--surface-2);
+
+    border: 1px solid var(--line);
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .users-table {
+        min-width: 1080px;
+    }
+
+    .user-actions {
+        gap: 5px;
+    }
+
+    .user-actions .btn {
+        padding: 6px 8px;
+    }
+}

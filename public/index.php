@@ -350,6 +350,38 @@ $router->post(
     ]
 );
 
+$router->get(
+    '/admin/users/{id}/edit',
+    [
+        AdminUserController::class,
+        'edit'
+    ]
+);
+
+$router->post(
+    '/admin/users/{id}/update',
+    [
+        AdminUserController::class,
+        'update'
+    ]
+);
+
+$router->post(
+    '/admin/users/{id}/toggle-status',
+    [
+        AdminUserController::class,
+        'toggleStatus'
+    ]
+);
+
+$router->post(
+    '/admin/users/{id}/delete',
+    [
+        AdminUserController::class,
+        'delete'
+    ]
+);
+
 
 /*
 |--------------------------------------------------------------------------

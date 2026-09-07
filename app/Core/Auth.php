@@ -17,9 +17,15 @@ final class Auth
     }
 
     public static function check(): bool
-    {
-        return self::id() !== null;
+{
+    $id = self::id();
+
+    if ($id === null) {
+        return false;
     }
+
+    return User::find($id) !== null;
+}
 
     public static function isAdmin(): bool
     {
@@ -42,14 +48,40 @@ final class Auth
         session_destroy();
     }
 
-    public static function requireLogin(): void
-    {
-        if (!self::check()) {
-            $_SESSION['flash_error'] = 'Silakan login terlebih dahulu.';
-            header('Location: /login');
-            exit;
-        }
+   public static function requireLogin(): void
+{
+    $id = self::id();
+
+    /*
+    |--------------------------------------------------------------------------
+    | Belum Login
+    |--------------------------------------------------------------------------
+    */
+    if ($id === null) {
+        $_SESSION['flash_error'] =
+            'Silakan login terlebih dahulu.';
+
+        header('Location: /login');
+        exit;
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Akun Dibekukan / Dihapus
+    |--------------------------------------------------------------------------
+    */
+    if (User::find($id) === null) {
+
+        unset($_SESSION['user_id']);
+
+        $_SESSION['flash_error'] =
+            'Akun Anda sedang dinonaktifkan atau tidak lagi tersedia. Hubungi administrator.';
+
+        header('Location: /login');
+        exit;
+    }
+}
 
     public static function requireAdmin(): void
     {
