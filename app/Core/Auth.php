@@ -7,8 +7,8 @@ final class Auth
 {
     public static function user(): ?array
     {
-        $id = $_SESSION['user_id'] ?? null;
-        return $id ? User::find((int) $id) : null;
+        $id = self::id();
+        return $id ? User::find($id) : null;
     }
 
     public static function id(): ?int
@@ -17,15 +17,10 @@ final class Auth
     }
 
     public static function check(): bool
-{
-    $id = self::id();
-
-    if ($id === null) {
-        return false;
+    {
+        $id = self::id();
+        return $id !== null && User::find($id) !== null;
     }
-
-    return User::find($id) !== null;
-}
 
     public static function isAdmin(): bool
     {
@@ -43,45 +38,35 @@ final class Auth
         $_SESSION = [];
         if (ini_get('session.use_cookies')) {
             $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
         }
         session_destroy();
     }
 
-   public static function requireLogin(): void
-{
-    $id = self::id();
+    public static function requireLogin(): void
+    {
+        $id = self::id();
+        if ($id === null) {
+            $_SESSION['flash_error'] = 'Silakan login terlebih dahulu.';
+            header('Location: /login');
+            exit;
+        }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Belum Login
-    |--------------------------------------------------------------------------
-    */
-    if ($id === null) {
-        $_SESSION['flash_error'] =
-            'Silakan login terlebih dahulu.';
-
-        header('Location: /login');
-        exit;
+        if (User::find($id) === null) {
+            unset($_SESSION['user_id']);
+            $_SESSION['flash_error'] = 'Akun Anda sedang dinonaktifkan atau tidak lagi tersedia. Hubungi administrator.';
+            header('Location: /login');
+            exit;
+        }
     }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Akun Dibekukan / Dihapus
-    |--------------------------------------------------------------------------
-    */
-    if (User::find($id) === null) {
-
-        unset($_SESSION['user_id']);
-
-        $_SESSION['flash_error'] =
-            'Akun Anda sedang dinonaktifkan atau tidak lagi tersedia. Hubungi administrator.';
-
-        header('Location: /login');
-        exit;
-    }
-}
 
     public static function requireAdmin(): void
     {

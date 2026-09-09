@@ -1,6 +1,8 @@
-# SIGAS-BPS v0.3 - Full KKA Catalogue
+# PENA MAS - Penomoran Agenda dan Manajemen Arsip Surat
 
-**SIGAS-BPS** adalah prototype Sistem Informasi Generate Agenda Surat untuk project Magang Mandiri di BPS Kota Palangka Raya.
+> Rebranding aplikasi dari SIGAS-BPS menjadi **PENA MAS**. Basis fitur tetap Full KKA v0.3 dengan peningkatan account management, ganti password, timezone WIB, dan perbaikan responsif.
+
+**PENA MAS** adalah prototype **Penomoran Agenda dan Manajemen Arsip Surat** untuk project Magang Mandiri di BPS Kota Palangka Raya.
 
 Versi **v0.3** berfokus pada pengembangan engine penomoran dan master Kode Klasifikasi Arsip (KKA). Katalog klasifikasi diimpor dari dokumen **Kode.pdf** yang diberikan untuk project.
 
@@ -32,6 +34,10 @@ Versi **v0.3** berfokus pada pengembangan engine penomoran dan master Kode Klasi
 - Admin dapat menelusuri katalog KKA
 - Agenda, search/filter, detail, cancel nomor, audit log
 - Login form tidak lagi mengisi akun demo otomatis
+- Ganti password mandiri untuk setiap user
+- Admin dapat edit, bekukan/aktifkan, dan soft-delete akun pengguna
+- Timezone aplikasi/database diselaraskan ke WIB (UTC+7)
+- Sidebar tetap fixed dan navigasi dapat di-scroll pada layar pendek
 
 ## Penting: status rule penomoran
 
@@ -83,10 +89,12 @@ copy .env.example .env
 Default XAMPP:
 
 ```env
-APP_NAME="SIGAS-BPS"
+APP_NAME="PENA MAS"
 APP_ENV=local
 APP_URL=http://127.0.0.1:8080
 APP_DEBUG=true
+APP_TIMEZONE=Asia/Jakarta
+DB_TIMEZONE=+07:00
 
 DB_DRIVER=mysql
 DB_HOST=127.0.0.1
@@ -254,6 +262,17 @@ public/
 ├── index.php
 └── router.php
 ```
+
+
+## Upgrade account management pada database yang sudah ada
+
+Jika database sudah berasal dari v0.3 dan belum memiliki kolom `users.deleted_at`, jalankan sekali:
+
+```powershell
+C:\xampp\mysql\bin\mysql.exe -u root agenda_surat_bps < database\migrations\20260907_user_account_management.sql
+```
+
+Untuk fresh install, migration tersebut tidak diperlukan karena `database/mysql_schema_seed.sql` sudah memuat struktur terbaru.
 
 ## Keamanan dan data BPS
 

@@ -15,7 +15,7 @@ final class Database
 
         $driver = Env::get('DB_DRIVER', 'mysql');
         if ($driver !== 'mysql') {
-            throw new \RuntimeException('Prototype v0.1 saat ini menggunakan MySQL/MariaDB.');
+            throw new \RuntimeException('PENA MAS saat ini menggunakan MySQL/MariaDB.');
         }
 
         $host = Env::get('DB_HOST', '127.0.0.1');
@@ -34,6 +34,9 @@ final class Database
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]
         );
+
+        $dbTimezone = Env::get('DB_TIMEZONE', '+07:00');
+        self::$pdo->exec('SET time_zone = ' . self::$pdo->quote($dbTimezone));
 
         return self::$pdo;
     }

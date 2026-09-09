@@ -1,4 +1,4 @@
-# SIGAS-BPS v0.3 - Full KKA
+# PENA MAS v0.3 - Full KKA
 
 ## Apa yang berubah
 

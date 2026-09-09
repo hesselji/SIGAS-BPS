@@ -6,7 +6,7 @@
 
   // Theme (dark default, persisted locally)
   const root = document.documentElement;
-  const storedTheme = localStorage.getItem('sigas-theme');
+  const storedTheme = localStorage.getItem('penamas-theme');
   if (storedTheme === 'light' || storedTheme === 'dark') root.dataset.theme = storedTheme;
   const themeToggle = $('[data-theme-toggle]');
   const themeIcon = $('[data-theme-icon]');
@@ -16,7 +16,7 @@
   syncThemeIcon();
   themeToggle?.addEventListener('click', () => {
     root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
-    localStorage.setItem('sigas-theme', root.dataset.theme);
+    localStorage.setItem('penamas-theme', root.dataset.theme);
     syncThemeIcon();
   });
 

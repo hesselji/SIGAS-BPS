@@ -1,11 +1,11 @@
-# SIGAS-BPS — UI Upgrade v0.2
+# PENA MAS — UI Upgrade v0.2
 
 Versi ini merupakan redesign visual penuh dari prototype v0.1 tanpa mengubah schema database.
 
 ## Yang diubah
 
-- Branding aplikasi menjadi **SIGAS-BPS**.
-- Logo BPS lokal di `public/assets/images/bps-logo.png`.
+- Branding aplikasi menjadi **PENA MAS**.
+- Logo PENA MAS menggunakan `public/assets/images/penamas-icon.png`.
 - Dark dashboard modern dengan aksen biru, oranye, dan hijau BPS.
 - Sidebar desktop + drawer mobile.
 - Global search menuju Agenda Surat.
@@ -32,7 +32,7 @@ Versi ini merupakan redesign visual penuh dari prototype v0.1 tanpa mengubah sch
 - `app/Core/helpers.php`
 - `public/assets/css/style.css`
 - `public/assets/js/app.js`
-- `public/assets/images/bps-logo.png`
+- `public/assets/images/penamas-icon.png`
 
 ## Upgrade project lama
 
@@ -41,7 +41,7 @@ Karena v0.2 tidak mengubah schema DB, database `agenda_surat_bps` yang sudah di-
 1. Backup project/repo lama atau commit dulu.
 2. Copy file v0.2 menimpa project lokal.
 3. Jangan timpa `.env` milik lokal; ZIP ini memang hanya membawa `.env.example`.
-4. Pastikan `.env` memiliki `APP_NAME="SIGAS-BPS"` jika ingin title browser ikut berubah.
+4. Pastikan `.env` memiliki `APP_NAME="PENA MAS"` jika ingin title browser ikut berubah.
 5. Restart PHP server.
 6. Hard refresh browser: `Ctrl+F5`.
 
@@ -50,7 +50,7 @@ Karena v0.2 tidak mengubah schema DB, database `agenda_surat_bps` yang sudah di-
 ```bash
 git checkout -b feature/ui-ux-redesign
 git add .
-git commit -m "Redesign SIGAS-BPS UI with BPS visual identity"
+git commit -m "Redesign PENA MAS UI with BPS visual identity"
 git push -u origin feature/ui-ux-redesign
 ```
 

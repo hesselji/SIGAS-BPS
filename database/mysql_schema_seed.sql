@@ -31,8 +31,10 @@ CREATE TABLE users (
     role ENUM('ADMIN','USER') NOT NULL DEFAULT 'USER',
     work_team_id INT UNSIGNED NULL,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
+    deleted_at DATETIME NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_users_deleted_at (deleted_at),
     CONSTRAINT fk_users_team FOREIGN KEY(work_team_id) REFERENCES work_teams(id)
 ) ENGINE=InnoDB;
 

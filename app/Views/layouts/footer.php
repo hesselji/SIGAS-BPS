@@ -1,14 +1,14 @@
 <?php if ($me): ?>
         </main>
         <footer class="app-footer">
-            <span>© <?= date('Y') ?> SIGAS-BPS • Prototype Internal</span>
-            <span>PHP + MySQL • Rule penomoran masih working set sampai dikonfirmasi</span>
+            <span>© <?= date('Y') ?> PENA MAS • Prototype Internal</span>
+            <span>Penomoran Agenda dan Manajemen Arsip Surat • PHP + MySQL</span>
         </footer>
     </div>
 </div>
 <?php else: ?>
     </main>
 <?php endif; ?>
-<script src="/assets/js/app.js?v=20260905-3" defer></script>
+<script src="/assets/js/app.js?v=20260909-penamas-1" defer></script>
 </body>
 </html>

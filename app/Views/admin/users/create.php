@@ -1,5 +1,5 @@
 <section class="page-heading">
-    <div><a class="breadcrumb" href="/admin/users"><?= ui_icon('arrow-left') ?> Pengguna</a><span class="eyebrow">ADMINISTRASI</span><h1>Tambah pengguna baru</h1><p>Buat akun dan tentukan hak akses awal pengguna SIGAS-BPS.</p></div>
+    <div><a class="breadcrumb" href="/admin/users"><?= ui_icon('arrow-left') ?> Pengguna</a><span class="eyebrow">ADMINISTRASI</span><h1>Tambah pengguna baru</h1><p>Buat akun dan tentukan hak akses awal pengguna PENA MAS.</p></div>
 </section>
 
 <section class="panel form-panel form-panel-narrow">
