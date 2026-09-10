@@ -4,34 +4,55 @@ $oldData = $_SESSION['old'] ?? [];
 ?>
 
 <section class="page-heading">
+
     <div>
-        <a class="breadcrumb" href="/letters">
-            <?= ui_icon('arrow-left') ?> Agenda Surat
+
+        <a
+            class="breadcrumb"
+            href="/letters"
+        >
+            <?= ui_icon('arrow-left') ?>
+            Agenda Surat
         </a>
 
-        <span class="eyebrow">GENERATE NOMOR</span>
+        <span class="eyebrow">
+            GENERATE NOMOR
+        </span>
 
-        <h1>Buat nomor surat keluar</h1>
+        <h1>
+            Buat nomor surat keluar
+        </h1>
 
         <p>
-            Lengkapi data surat. Sistem akan membentuk nomor otomatis
-            dari rule penomoran dan Kode Klasifikasi Arsip.
+            Lengkapi data surat. Sistem akan
+            membentuk nomor otomatis dari rule
+            penomoran dan Kode Klasifikasi Arsip.
         </p>
+
     </div>
 
     <div class="heading-hint">
+
         <span>
             <?= ui_icon('shield') ?>
         </span>
 
         <div>
-            <strong>Sequence aman</strong>
+
+            <strong>
+                Sequence aman
+            </strong>
+
             <small>
                 Nomor dibuat melalui transaksi database.
             </small>
+
         </div>
+
     </div>
+
 </section>
+
 
 <div class="create-layout">
 
@@ -47,6 +68,7 @@ $oldData = $_SESSION['old'] ?? [];
 
             <?= csrf_field() ?>
 
+
             <!-- ===================================================
                  01. INFORMASI SURAT
                  =================================================== -->
@@ -54,18 +76,25 @@ $oldData = $_SESSION['old'] ?? [];
             <div class="form-section">
 
                 <div class="form-section-head">
+
                     <span class="section-step">
                         01
                     </span>
 
                     <div>
-                        <h2>Informasi Surat</h2>
+
+                        <h2>
+                            Informasi Surat
+                        </h2>
 
                         <p>
                             Data dasar yang digunakan dalam agenda.
                         </p>
+
                     </div>
+
                 </div>
+
 
                 <div class="form-grid form-grid-2">
 
@@ -89,19 +118,24 @@ $oldData = $_SESSION['old'] ?? [];
 
                                 <?php
                                 /*
-                                 * Tahap 2:
+                                 * Tahap aturan tanggal:
                                  *
                                  * MAIN_62710
                                  * tidak boleh tanggal lampau.
                                  *
-                                 * Rule selain itu, termasuk
-                                 * SUBBAG_62711, tetap fleksibel.
+                                 * SUBBAG_62711
+                                 * tetap fleksibel.
                                  */
                                 $dateMode =
-                                    ($t['rule_code'] ?? '')
-                                    === 'MAIN_62710'
-                                        ? 'NO_PAST'
-                                        : 'ANY';
+                                    (
+                                        $t['rule_code']
+                                        ===
+                                        'MAIN_62710'
+                                    )
+                                        ?
+                                        'NO_PAST'
+                                        :
+                                        'ANY';
                                 ?>
 
                                 <option
@@ -114,7 +148,8 @@ $oldData = $_SESSION['old'] ?? [];
                                         (string)(
                                             $oldData[
                                                 'letter_type_id'
-                                            ] ?? ''
+                                            ]
+                                            ?? ''
                                         )
                                         ===
                                         (string)$t['id']
@@ -123,9 +158,11 @@ $oldData = $_SESSION['old'] ?? [];
                                         : ''
                                     ?>
                                 >
+
                                     <?= e($t['name']) ?>
                                     —
                                     <?= e($t['rule_code']) ?>
+
                                 </option>
 
                             <?php endforeach; ?>
@@ -148,9 +185,7 @@ $oldData = $_SESSION['old'] ?? [];
 
                             <small class="field-error">
                                 <?= e(
-                                    $errs[
-                                        'letter_type_id'
-                                    ]
+                                    $errs['letter_type_id']
                                 ) ?>
                             </small>
 
@@ -182,7 +217,8 @@ $oldData = $_SESSION['old'] ?? [];
                                         (string)(
                                             $oldData[
                                                 'work_team_id'
-                                            ] ?? ''
+                                            ]
+                                            ?? ''
                                         )
                                         ===
                                         (string)$t['id']
@@ -191,7 +227,9 @@ $oldData = $_SESSION['old'] ?? [];
                                         : ''
                                     ?>
                                 >
+
                                     <?= e($t['name']) ?>
+
                                 </option>
 
                             <?php endforeach; ?>
@@ -206,9 +244,7 @@ $oldData = $_SESSION['old'] ?? [];
 
                             <small class="field-error">
                                 <?= e(
-                                    $errs[
-                                        'work_team_id'
-                                    ]
+                                    $errs['work_team_id']
                                 ) ?>
                             </small>
 
@@ -237,7 +273,8 @@ $oldData = $_SESSION['old'] ?? [];
                                 <?= (
                                     $oldData[
                                         'system_type'
-                                    ] ?? ''
+                                    ]
+                                    ?? ''
                                 ) === 'SRIKANDI'
                                     ? 'selected'
                                     : ''
@@ -251,7 +288,8 @@ $oldData = $_SESSION['old'] ?? [];
                                 <?= (
                                     $oldData[
                                         'system_type'
-                                    ] ?? ''
+                                    ]
+                                    ?? ''
                                 ) === 'NON_SRIKANDI'
                                     ? 'selected'
                                     : ''
@@ -299,9 +337,7 @@ $oldData = $_SESSION['old'] ?? [];
 
                             <small class="field-error">
                                 <?= e(
-                                    $errs[
-                                        'letter_date'
-                                    ]
+                                    $errs['letter_date']
                                 ) ?>
                             </small>
 
@@ -310,6 +346,7 @@ $oldData = $_SESSION['old'] ?? [];
                     </label>
 
                 </div>
+
             </div>
 
 
@@ -326,6 +363,7 @@ $oldData = $_SESSION['old'] ?? [];
                     </span>
 
                     <div>
+
                         <h2>
                             Aturan & Klasifikasi
                         </h2>
@@ -334,11 +372,17 @@ $oldData = $_SESSION['old'] ?? [];
                             Pilih sifat surat dan kode klasifikasi
                             sesuai dokumen Kode Klasifikasi.
                         </p>
+
                     </div>
 
                 </div>
 
+
                 <div class="form-grid form-grid-2">
+
+                    <!-- ===========================================
+                         SIFAT SURAT BERDASARKAN ROLE
+                         =========================================== -->
 
                     <label class="field">
 
@@ -346,42 +390,122 @@ $oldData = $_SESSION['old'] ?? [];
                             Sifat Surat <i>*</i>
                         </span>
 
-                        <select
-                            name="sensitivity"
-                            id="sensitivity"
-                            required
-                        >
 
-                            <option value="">
-                                Pilih sifat surat
-                            </option>
+                        <?php if (!empty($isAdmin)): ?>
 
-                            <?php foreach (
-                                $sensitivities as $s
-                            ): ?>
+                            <!--
+                                ADMIN:
+                                boleh memilih:
+                                - Biasa
+                                - Rahasia
+                                - Sangat Rahasia
+                            -->
 
-                                <option
-                                    value="<?= e(
-                                        $s['code']
-                                    ) ?>"
-                                    data-prefix="<?= e(
-                                        $s['prefix']
-                                    ) ?>"
-                                    <?= (
-                                        $oldData[
-                                            'sensitivity'
-                                        ] ?? ''
-                                    ) === $s['code']
-                                        ? 'selected'
-                                        : ''
-                                    ?>
-                                >
-                                    <?= e($s['name']) ?>
+                            <select
+                                name="sensitivity"
+                                id="sensitivity"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih sifat surat
                                 </option>
 
-                            <?php endforeach; ?>
+                                <?php foreach (
+                                    $sensitivities as $s
+                                ): ?>
 
-                        </select>
+                                    <option
+                                        value="<?= e(
+                                            $s['code']
+                                        ) ?>"
+                                        data-prefix="<?= e(
+                                            $s['prefix']
+                                        ) ?>"
+                                        <?= (
+                                            $oldData[
+                                                'sensitivity'
+                                            ]
+                                            ?? ''
+                                        ) === $s['code']
+                                            ? 'selected'
+                                            : ''
+                                        ?>
+                                    >
+
+                                        <?= e($s['name']) ?>
+
+                                    </option>
+
+                                <?php endforeach; ?>
+
+                            </select>
+
+                            <small class="field-help">
+                                Admin dapat membuat surat
+                                Biasa, Rahasia, atau Sangat Rahasia.
+                            </small>
+
+
+                        <?php else: ?>
+
+                            <!--
+                                USER:
+                                tidak diberi dropdown pilihan.
+
+                                Select disabled hanya digunakan
+                                untuk tampilan dan Live Preview.
+
+                                Hidden input mengirim BIASA,
+                                tetapi backend tetap melakukan
+                                validasi ulang.
+                            -->
+
+                            <select
+                                id="sensitivity"
+                                disabled
+                                aria-disabled="true"
+                            >
+
+                                <option
+                                    value="BIASA"
+                                    data-prefix="B"
+                                    selected
+                                >
+                                    Biasa
+                                </option>
+
+                            </select>
+
+
+                            <input
+                                type="hidden"
+                                name="sensitivity"
+                                value="BIASA"
+                            >
+
+
+                            <small class="field-help">
+                                Untuk akun USER, sifat surat
+                                ditetapkan otomatis menjadi Biasa.
+                            </small>
+
+                        <?php endif; ?>
+
+
+                        <?php if (
+                            !empty(
+                                $errs['sensitivity']
+                            )
+                        ): ?>
+
+                            <small class="field-error">
+                                <?= e(
+                                    $errs['sensitivity']
+                                ) ?>
+                            </small>
+
+                        <?php endif; ?>
 
                     </label>
 
@@ -407,7 +531,8 @@ $oldData = $_SESSION['old'] ?? [];
                                 <?= (
                                     $oldData[
                                         'uses_budget'
-                                    ] ?? ''
+                                    ]
+                                    ?? ''
                                 ) === 'Y'
                                     ? 'selected'
                                     : ''
@@ -421,7 +546,8 @@ $oldData = $_SESSION['old'] ?? [];
                                 <?= (
                                     $oldData[
                                         'uses_budget'
-                                    ] ?? ''
+                                    ]
+                                    ?? ''
                                 ) === 'T'
                                     ? 'selected'
                                     : ''
@@ -435,8 +561,7 @@ $oldData = $_SESSION['old'] ?? [];
                         <small class="field-help">
                             Disimpan sebagai atribut surat.
                             Pembatasan KKA berdasarkan anggaran
-                            belum dipaksakan sebelum rule BPS
-                            dikonfirmasi.
+                            belum dipaksakan pada tahap ini.
                         </small>
 
                     </label>
@@ -469,13 +594,16 @@ $oldData = $_SESSION['old'] ?? [];
                                     <?= (
                                         $oldData[
                                             'archive_type'
-                                        ] ?? ''
+                                        ]
+                                        ?? ''
                                     ) === $a['code']
                                         ? 'selected'
                                         : ''
                                     ?>
                                 >
+
                                     <?= e($a['name']) ?>
+
                                 </option>
 
                             <?php endforeach; ?>
@@ -516,7 +644,8 @@ $oldData = $_SESSION['old'] ?? [];
                             data-old="<?= e(
                                 $oldData[
                                     'classification_parent'
-                                ] ?? ''
+                                ]
+                                ?? ''
                             ) ?>"
                             required
                             disabled
@@ -561,7 +690,8 @@ $oldData = $_SESSION['old'] ?? [];
                             data-old="<?= e(
                                 $oldData[
                                     'classification_child'
-                                ] ?? ''
+                                ]
+                                ?? ''
                             ) ?>"
                             required
                             disabled
@@ -594,6 +724,7 @@ $oldData = $_SESSION['old'] ?? [];
                     </label>
 
                 </div>
+
             </div>
 
 
@@ -610,6 +741,7 @@ $oldData = $_SESSION['old'] ?? [];
                     </span>
 
                     <div>
+
                         <h2>
                             Tujuan & Perihal
                         </h2>
@@ -618,9 +750,11 @@ $oldData = $_SESSION['old'] ?? [];
                             Informasi yang akan tampil
                             pada record agenda.
                         </p>
+
                     </div>
 
                 </div>
+
 
                 <div class="form-grid form-grid-2">
 
@@ -645,9 +779,7 @@ $oldData = $_SESSION['old'] ?? [];
 
                             <small class="field-error">
                                 <?= e(
-                                    $errs[
-                                        'recipient'
-                                    ]
+                                    $errs['recipient']
                                 ) ?>
                             </small>
 
@@ -677,9 +809,7 @@ $oldData = $_SESSION['old'] ?? [];
 
                             <small class="field-error">
                                 <?= e(
-                                    $errs[
-                                        'subject'
-                                    ]
+                                    $errs['subject']
                                 ) ?>
                             </small>
 
@@ -703,8 +833,13 @@ $oldData = $_SESSION['old'] ?? [];
                     </label>
 
                 </div>
+
             </div>
 
+
+            <!-- ===================================================
+                 ACTION
+                 =================================================== -->
 
             <div class="form-actions-sticky">
 
@@ -713,11 +848,13 @@ $oldData = $_SESSION['old'] ?? [];
                     <?= ui_icon('lock') ?>
 
                     <span>
-                        Data dan KKA divalidasi kembali
-                        di server sebelum nomor dibuat.
+                        Role, sifat surat, data, dan KKA
+                        divalidasi kembali di server sebelum
+                        nomor dibuat.
                     </span>
 
                 </div>
+
 
                 <div>
 
@@ -742,6 +879,7 @@ $oldData = $_SESSION['old'] ?? [];
                     </button>
 
                 </div>
+
             </div>
 
         </form>
@@ -779,30 +917,43 @@ $oldData = $_SESSION['old'] ?? [];
                 ?-???/62710/KKA.000/<?= date('Y') ?>
             </div>
 
+
             <div class="preview-legend">
 
                 <div>
+
                     <i class="blue"></i>
+
                     <span>
                         Prefix & sequence
                     </span>
+
                 </div>
 
+
                 <div>
+
                     <i class="green"></i>
+
                     <span>
                         Kode unit / segmen
                     </span>
+
                 </div>
 
+
                 <div>
+
                     <i class="orange"></i>
+
                     <span>
                         Klasifikasi KKA
                     </span>
+
                 </div>
 
             </div>
+
 
             <div class="preview-info">
 
@@ -827,17 +978,24 @@ $oldData = $_SESSION['old'] ?? [];
                 ALUR SISTEM
             </span>
 
+
             <div class="guide-step">
 
-                <b>1</b>
+                <b>
+                    1
+                </b>
 
                 <div>
-                    <strong>Validasi</strong>
+
+                    <strong>
+                        Validasi
+                    </strong>
 
                     <small>
-                        Jenis arsip, KKA, dan field
-                        surat dicek.
+                        Role, sifat surat, KKA,
+                        dan field surat dicek.
                     </small>
+
                 </div>
 
             </div>
@@ -845,9 +1003,12 @@ $oldData = $_SESSION['old'] ?? [];
 
             <div class="guide-step">
 
-                <b>2</b>
+                <b>
+                    2
+                </b>
 
                 <div>
+
                     <strong>
                         Kunci Sequence
                     </strong>
@@ -855,6 +1016,7 @@ $oldData = $_SESSION['old'] ?? [];
                     <small>
                         Database mencegah nomor ganda.
                     </small>
+
                 </div>
 
             </div>
@@ -862,9 +1024,12 @@ $oldData = $_SESSION['old'] ?? [];
 
             <div class="guide-step">
 
-                <b>3</b>
+                <b>
+                    3
+                </b>
 
                 <div>
+
                     <strong>
                         Generate
                     </strong>
@@ -873,6 +1038,7 @@ $oldData = $_SESSION['old'] ?? [];
                         Pattern rule diisi token
                         secara otomatis.
                     </small>
+
                 </div>
 
             </div>
@@ -880,9 +1046,12 @@ $oldData = $_SESSION['old'] ?? [];
 
             <div class="guide-step">
 
-                <b>4</b>
+                <b>
+                    4
+                </b>
 
                 <div>
+
                     <strong>
                         Simpan Record
                     </strong>
@@ -891,6 +1060,7 @@ $oldData = $_SESSION['old'] ?? [];
                         Nomor dan klasifikasi masuk
                         ke agenda.
                     </small>
+
                 </div>
 
             </div>
