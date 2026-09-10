@@ -1,6 +1,6 @@
 /**
  * SIGAS-BPS - Letter Create Form JavaScript
- * Handles KKA cascade loading, search, and form interactions
+ * Handles KKA cascade loading, search, budget auto-fill, and form interactions
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (keyword.length < 2) {
-                // Show all items if search is too short
                 showAllClassificationItems();
                 return;
             }
@@ -77,7 +76,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 4. Auto-fill: Jika Ada Anggaran = Ya, otomatis pilih Fasilitatif & KU
+    // 4. **AUTO-FILL: Jika Ada Anggaran = Ya, otomatis pilih Fasilitatif & KU**
+    if (usesBudgetSelect && archiveTypeSelect && classificationParent) {
+        usesBudgetSelect.addEventListener('change', function() {
+            if (this.value === 'Y') {
+                // Auto-set Jenis Arsip to FASILITATIF
+                setSelectValue(archiveTypeSelect, 'FASILITATIF');
+                
+                // Trigger change event to load groups and show Master Klasifikasi
+                setTimeout(() => {
+                    archiveTypeSelect.dispatchEvent(new Event('change'));
+                    
+                    // After groups loaded, auto-set Kelompok KKA to KU
+                    setTimeout(() => {
+                        setSelectValue(classificationParent, 'KU');
+                        
+                        // Trigger change to load classification items
+                        setTimeout(() => {
+                            classificationParent.dispatchEvent(new Event('change'));
+                        }, 100);
+                    }, 150);
+                }, 100);
+            }
+            // If "Tidak" selected, unlock fields (user can choose manually)
+            // Fields remain editable, no auto-fill
+        });
+    }
+
+    // 5. Auto-fill: Jika Ada Anggaran = Ya, otomatis pilih Fasilitatif & KU
     if (usesBudgetSelect && archiveTypeSelect && classificationParent) {
         usesBudgetSelect.addEventListener('change', function() {
             if (this.value === 'Y') {
