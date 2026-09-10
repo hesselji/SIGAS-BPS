@@ -81,7 +81,6 @@ final class OutgoingLetterController
             $errors['archive_type']='Pilihan tidak valid.';
         }
 
-        // Legacy scope is retained in stored records for backward compatibility.
         $input['scope_key']=$input['uses_budget'].($input['archive_type']==='FASILITATIF'?'F':'S');
 
         if(
@@ -154,36 +153,46 @@ final class OutgoingLetterController
         exit;
     }
 
+    /**
+     * Get classification groups by archive type
+     * Returns array directly for JavaScript consumption
+     */
     public function classificationGroups(): void
     {
         Auth::requireLogin();
         header('Content-Type: application/json; charset=utf-8');
-        $archiveType=$_GET['archive_type']??'';
-        if(!in_array($archiveType,['FASILITATIF','SUBSTANTIF'],true)) {
+        
+        $archiveType = trim($_GET['archive_type'] ?? '');
+        
+        if (!in_array($archiveType, ['FASILITATIF', 'SUBSTANTIF'], true)) {
             http_response_code(422);
-            echo json_encode(['success'=>false,'message'=>'Jenis arsip tidak valid']);
+            echo json_encode([]);
             return;
         }
-        echo json_encode([
-            'success'=>true,
-            'data'=>MasterData::classificationGroups($archiveType),
-        ],JSON_UNESCAPED_UNICODE);
+        
+        $groups = MasterData::classificationGroups($archiveType);
+        echo json_encode($groups, JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * Get classification items by group code
+     * Returns array directly for JavaScript consumption
+     */
     public function classificationItems(): void
     {
         Auth::requireLogin();
         header('Content-Type: application/json; charset=utf-8');
-        $group=strtoupper(trim($_GET['group']??''));
-        if(!preg_match('/^[A-Z]{2,3}$/',$group)) {
+        
+        $group = strtoupper(trim($_GET['group'] ?? ''));
+        
+        if (!preg_match('/^[A-Z]{2,3}$/', $group)) {
             http_response_code(422);
-            echo json_encode(['success'=>false,'message'=>'Kelompok klasifikasi tidak valid']);
+            echo json_encode([]);
             return;
         }
-        echo json_encode([
-            'success'=>true,
-            'data'=>MasterData::classificationItems($group),
-        ],JSON_UNESCAPED_UNICODE);
+        
+        $items = MasterData::classificationItems($group);
+        echo json_encode($items, JSON_UNESCAPED_UNICODE);
     }
 
     /** Legacy endpoint kept so bookmarks / older JS do not break. */

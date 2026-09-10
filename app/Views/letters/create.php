@@ -60,48 +60,82 @@ $oldData = $_SESSION['old'] ?? [];
             </div>
 
             <div class="form-section">
-                <div class="form-section-head"><span class="section-step orange">02</span><div><h2>Aturan & Klasifikasi</h2><p>Pilih sifat surat dan kode klasifikasi sesuai dokumen Kode Klasifikasi.</p></div></div>
-                <div class="form-grid form-grid-2">
-                    <label class="field">
-                        <span>Sifat Surat <i>*</i></span>
-                        <select name="sensitivity" id="sensitivity" required>
-                            <option value="">Pilih sifat surat</option>
-                            <?php foreach ($sensitivities as $s): ?><option value="<?= e($s['code']) ?>" data-prefix="<?= e($s['prefix']) ?>" <?= ($oldData['sensitivity'] ?? '') === $s['code'] ? 'selected' : '' ?>><?= e($s['name']) ?></option><?php endforeach; ?>
-                        </select>
-                    </label>
-                    <label class="field">
-                        <span>Ada Anggaran? <i>*</i></span>
-                        <select name="uses_budget" id="usesBudget" required>
-                            <option value="">Pilih kondisi</option>
-                            <option value="Y" <?= ($oldData['uses_budget'] ?? '') === 'Y' ? 'selected' : '' ?>>Ya</option>
-                            <option value="T" <?= ($oldData['uses_budget'] ?? '') === 'T' ? 'selected' : '' ?>>Tidak</option>
-                        </select>
-                        <small class="field-help">Disimpan sebagai atribut surat. Pembatasan KKA berdasarkan anggaran belum dipaksakan sebelum rule BPS dikonfirmasi.</small>
-                    </label>
-                    <label class="field">
-                        <span>Jenis Arsip <i>*</i></span>
-                        <select name="archive_type" id="archiveType" required>
-                            <option value="">Pilih jenis arsip</option>
-                            <?php foreach ($archiveTypes as $a): ?><option value="<?= e($a['code']) ?>" <?= ($oldData['archive_type'] ?? '') === $a['code'] ? 'selected' : '' ?>><?= e($a['name']) ?></option><?php endforeach; ?>
-                        </select>
-                    </label>
-                    <div class="scope-card">
-                        <span>Master Klasifikasi</span>
-                        <strong id="scopePreview">—</strong>
-                        <small>Kelompok KKA ditentukan oleh Jenis Arsip.</small>
-                    </div>
-                    <label class="field">
-                        <span>Kelompok Klasifikasi (KKA) <i>*</i></span>
-                        <select name="classification_parent" id="classificationParent" data-old="<?= e($oldData['classification_parent'] ?? '') ?>" required disabled><option value="">Pilih jenis arsip dahulu</option></select>
-                        <?php if (!empty($errs['classification_parent'])): ?><small class="field-error"><?= e($errs['classification_parent']) ?></small><?php endif; ?>
-                    </label>
-                    <label class="field">
-                        <span>Kode Klasifikasi <i>*</i></span>
-                        <select name="classification_child" id="classificationChild" data-old="<?= e($oldData['classification_child'] ?? '') ?>" required disabled><option value="">Pilih kelompok KKA dahulu</option></select>
-                        <?php if (!empty($errs['classification_child'])): ?><small class="field-error"><?= e($errs['classification_child']) ?></small><?php endif; ?>
-                    </label>
-                </div>
+    <div class="form-section-head"><span class="section-step orange">02</span><div><h2>Aturan & Klasifikasi</h2><p>Pilih sifat surat dan kode klasifikasi sesuai dokumen Kode Klasifikasi.</p></div></div>
+     <!-- Search KKA - Ditambahkan di sini -->
+    <div class="kka-search-container" style="margin-bottom: 20px;">
+        <div class="kka-search-wrapper">
+            <span class="ui-icon"><?= ui_icon('search') ?></span>
+            <input type="text" 
+                   id="kkaSearchField" 
+                   class="kka-search-input" 
+                   placeholder="Cari kode atau nama klasifikasi (contoh: pajak, program, 010)..."
+                   autocomplete="off">
+            <button type="button" id="kkaSearchClear" class="kka-search-clear" style="display:none;">
+                <?= ui_icon('x') ?>
+            </button>
+        </div>
+        <small class="field-help" style="margin-top: 6px;">Ketik minimal 2 karakter untuk memfilter daftar kode klasifikasi.</small>
+    </div>
+    <div class="form-grid form-grid-2">
+        <label class="field">
+            <span>Sifat Surat <i>*</i></span>
+            <select name="sensitivity" id="sensitivity" required>
+                <option value="">Pilih sifat surat</option>
+                <?php foreach ($sensitivities as $s): ?><option value="<?= e($s['code']) ?>" data-prefix="<?= e($s['prefix']) ?>" <?= ($oldData['sensitivity'] ?? '') === $s['code'] ? 'selected' : '' ?>><?= e($s['name']) ?></option><?php endforeach; ?>
+            </select>
+        </label>
+        <label class="field">
+            <span>Ada Anggaran? <i>*</i></span>
+            <select name="uses_budget" id="usesBudget" required>
+                <option value="">Pilih kondisi</option>
+                <option value="Y" <?= ($oldData['uses_budget'] ?? '') === 'Y' ? 'selected' : '' ?>>Ya</option>
+                <option value="T" <?= ($oldData['uses_budget'] ?? '') === 'T' ? 'selected' : '' ?>>Tidak</option>
+            </select>
+            <small class="field-help">Disimpan sebagai atribut surat. Pembatasan KKA berdasarkan anggaran belum dipaksakan sebelum rule BPS dikonfirmasi.</small>
+        </label>
+        <label class="field">
+            <span>Jenis Arsip <i>*</i></span>
+            <select name="archive_type" id="archiveType" required>
+                <option value="">Pilih jenis arsip</option>
+                <?php foreach ($archiveTypes as $a): ?><option value="<?= e($a['code']) ?>" <?= ($oldData['archive_type'] ?? '') === $a['code'] ? 'selected' : '' ?>><?= e($a['name']) ?></option><?php endforeach; ?>
+            </select>
+        </label>
+        
+        <!-- Master Klasifikasi - Muncul Otomatis -->
+        <div class="scope-card" id="scopeCard" style="display: none;">
+            <span>Master Klasifikasi</span>
+            <strong id="scopePreview">—</strong>
+            <small>Kelompok KKA ditentukan oleh Jenis Arsip.</small>
+        </div>
+        
+        <label class="field">
+            <span>Kelompok Klasifikasi (KKA) <i>*</i></span>
+            <select name="classification_parent" id="classificationParent" data-old="<?= e($oldData['classification_parent'] ?? '') ?>" required disabled>
+                <option value="">Pilih jenis arsip dahulu</option>
+            </select>
+            <?php if (!empty($errs['classification_parent'])): ?><small class="field-error"><?= e($errs['classification_parent']) ?></small><?php endif; ?>
+        </label>
+        
+        <!-- Kode Klasifikasi dengan Search di Dropdown -->
+        <label class="field">
+            <span>Kode Klasifikasi <i>*</i></span>
+            <div class="dropdown-search-wrapper">
+                <input type="text" 
+                       id="kkaSearchInput" 
+                       class="dropdown-search-input" 
+                       placeholder="Cari kode atau nama klasifikasi..."
+                       autocomplete="off"
+                       style="display: none;">
+                <select name="classification_child" id="classificationChild" data-old="<?= e($oldData['classification_child'] ?? '') ?>" required disabled>
+                    <option value="">Pilih kelompok KKA dahulu</option>
+                </select>
+                <div id="kkaDropdown" class="custom-dropdown"></div>
             </div>
+            <small class="field-help">Gunakan kolom search untuk memfilter pilihan.</small>
+            <?php if (!empty($errs['classification_child'])): ?><small class="field-error"><?= e($errs['classification_child']) ?></small><?php endif; ?>
+        </label>
+    </div>
+</div>
 
             <div class="form-section">
                 <div class="form-section-head"><span class="section-step green">03</span><div><h2>Tujuan & Perihal</h2><p>Informasi yang akan tampil pada record agenda.</p></div></div>
@@ -141,4 +175,28 @@ $oldData = $_SESSION['old'] ?? [];
         </section>
     </aside>
 </div>
+
+<script src="/assets/js/letter-create.js"></script>
+<script>
+// Initialize classification cascade
+document.addEventListener('DOMContentLoaded', function() {
+    const archiveTypeSelect = document.getElementById('archiveType');
+    const classificationParent = document.getElementById('classificationParent');
+    
+    // Load groups when archive type changes
+    if (archiveTypeSelect) {
+        archiveTypeSelect.addEventListener('change', function() {
+            if (typeof window.loadClassificationGroups === 'function') {
+                window.loadClassificationGroups(this.value);
+            }
+        });
+        
+        // Trigger initial load if has value
+        if (archiveTypeSelect.value) {
+            window.loadClassificationGroups(archiveTypeSelect.value);
+        }
+    }
+});
+</script>
+
 <?php unset($_SESSION['old']); ?>
