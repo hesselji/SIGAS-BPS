@@ -32,10 +32,11 @@
         </div>
 
         <div class="login-card">
-            <div class="login-card-brand">
-                <img src="/assets/images/penamas-icon.png" alt="Logo PENA MAS">
-                <div><strong>PENA MAS</strong><small>Penomoran Agenda dan Manajemen Arsip Surat</small></div>
-            </div>
+
+          <div class="login-card-brand">
+    <img src="/assets/images/user-icon.svg" alt="User Icon">
+    <span class="login-label">LOGIN</span>
+</div>
 
             <div class="login-heading">
                 <span class="status-dot"><i></i> Sistem siap digunakan</span>

@@ -114,17 +114,27 @@ html[data-theme="light"]{
     font-weight:650;
 }
 .login-card-brand{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:18px;
-    padding-bottom:16px;
-    border-bottom:1px solid #1c2833;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  margin-bottom:22px;
+  padding-bottom:20px;
+  border-bottom:1px solid #1c2833;
 }
 .login-card-brand img{
-    width:38px;
-    height:48px;
-    object-fit:contain;
+  width:100px;
+  height:100px;
+  object-fit:contain;
+  filter:drop-shadow(0 8px 20px rgba(19,122,194,.35));
+}
+.login-card-brand .login-label{
+  font-size:18px;
+  font-weight:850;
+  letter-spacing:.25em;
+  color:#fff;
+  text-transform:uppercase;
+  margin-top:4px;
 }
 .login-card-brand strong,
 .login-card-brand small{
@@ -556,4 +566,39 @@ html[data-theme="light"]{
 .profile-dropdown-item .ui-icon{
     width: 14px;
     height: 14px;
+}
+/* Login User Icon */
+.login-card-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #1c2833;
+}
+
+.login-user-icon {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(74, 154, 224, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.login-user-icon:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive untuk mobile */
+@media (max-width: 700px) {
+    .login-user-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
+.login-user-icon {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(107, 33, 168, 0.4));
 }
