@@ -475,4 +475,21 @@
     filterRecipientUsers();
     refreshRecipientSummary();
   }
+  // Profile dropdown toggle
+const profileChip = $('#profileChip');
+const profileDropdown = $('#profileDropdown');
+if (profileChip && profileDropdown) {
+    profileChip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.toggle('show');
+    });
+    
+    document.addEventListener('click', () => {
+        profileDropdown.classList.remove('show');
+    });
+    
+    profileDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+}
 })();

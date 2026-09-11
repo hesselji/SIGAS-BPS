@@ -90,7 +90,19 @@ $searchPlaceholder = $searchIncoming ? 'Cari surat masuk, asal, perihal...' : 'C
             <div class="topbar-actions">
                 <button class="icon-btn" type="button" data-theme-toggle aria-label="Ganti tema" title="Ganti tema"><span data-theme-icon><?= ui_icon('moon') ?></span></button>
                 <button class="icon-btn notification-btn" type="button" aria-label="Notifikasi" title="Notifikasi"><?= ui_icon('bell') ?><i></i></button>
-                <div class="profile-chip"><div class="avatar"><?= e(user_initials($me['name'])) ?></div><div><strong><?= e($me['name']) ?></strong><small><?= e($me['role']) ?></small></div></div>
+                <div class="profile-chip" id="profileChip">
+    <div class="avatar"><?= e(user_initials($me['name'])) ?></div>
+    <div><strong><?= e($me['name']) ?></strong><small><?= e($me['role']) ?></small></div>
+    <!-- Dropdown Logout -->
+    <div class="profile-dropdown" id="profileDropdown">
+        <form method="post" action="/logout">
+            <?= csrf_field() ?>
+            <button type="submit" class="profile-dropdown-item">
+                <?= ui_icon('logout') ?> Logout
+            </button>
+        </form>
+    </div>
+</div>
             </div>
         </header>
 
