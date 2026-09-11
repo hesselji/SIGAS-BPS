@@ -476,3 +476,298 @@
     refreshRecipientSummary();
   }
 })();
+
+/* ================================================================
+   PENA MAS - LOGIN ANIMATION
+   Login-only enhancement.
+   Tidak memengaruhi dashboard / halaman internal.
+   ================================================================ */
+
+(() => {
+  'use strict';
+
+  const page =
+    document.querySelector(
+      '.pm-login-page'
+    );
+
+  if (!page) {
+    return;
+  }
+
+
+  const scene =
+    document.querySelector(
+      '#pmLoginVisual'
+    );
+
+  const card =
+    document.querySelector(
+      '#pmLoginCard'
+    );
+
+  const hero =
+    document.querySelector(
+      '.pm-login-hero'
+    );
+
+
+  const reduceMotion =
+    window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+
+  const finePointer =
+    window.matchMedia(
+      '(pointer: fine)'
+    ).matches;
+
+
+  /*
+   * =============================================================
+   * 3D PARALLAX ILLUSTRATION
+   * =============================================================
+   */
+  if (
+    scene
+    &&
+    hero
+    &&
+    !reduceMotion
+    &&
+    finePointer
+  ) {
+
+    let frameId =
+      null;
+
+    let targetX =
+      0;
+
+    let targetY =
+      0;
+
+
+    const renderScene =
+      () => {
+
+        scene.style.transform =
+          `
+            perspective(1100px)
+            rotateX(${targetY * -2.1}deg)
+            rotateY(${targetX * 3.2}deg)
+            translate3d(
+              ${targetX * 5}px,
+              ${targetY * 4}px,
+              0
+            )
+          `;
+
+        frameId =
+          null;
+      };
+
+
+    hero.addEventListener(
+      'pointermove',
+      (event) => {
+
+        const rect =
+          hero.getBoundingClientRect();
+
+        const x =
+          (
+            event.clientX
+            -
+            rect.left
+          )
+          /
+          rect.width;
+
+        const y =
+          (
+            event.clientY
+            -
+            rect.top
+          )
+          /
+          rect.height;
+
+
+        targetX =
+          (
+            x
+            -
+            .5
+          )
+          *
+          2;
+
+        targetY =
+          (
+            y
+            -
+            .5
+          )
+          *
+          2;
+
+
+        if (!frameId) {
+          frameId =
+            requestAnimationFrame(
+              renderScene
+            );
+        }
+
+      }
+    );
+
+
+    hero.addEventListener(
+      'pointerleave',
+      () => {
+
+        targetX =
+          0;
+
+        targetY =
+          0;
+
+        scene.style.transform =
+          `
+            perspective(1100px)
+            rotateX(0deg)
+            rotateY(0deg)
+            translate3d(0,0,0)
+          `;
+
+      }
+    );
+
+  }
+
+
+  /*
+   * =============================================================
+   * DYNAMIC LOGIN CARD LIGHT
+   * =============================================================
+   *
+   * Glow mengikuti posisi mouse tetapi sangat subtle.
+   */
+  if (
+    card
+    &&
+    !reduceMotion
+    &&
+    finePointer
+  ) {
+
+    card.addEventListener(
+      'pointermove',
+      (event) => {
+
+        const rect =
+          card.getBoundingClientRect();
+
+        const x =
+          event.clientX
+          -
+          rect.left;
+
+        const y =
+          event.clientY
+          -
+          rect.top;
+
+
+        card.style.setProperty(
+          '--pm-card-x',
+          `${x}px`
+        );
+
+
+        card.style.setProperty(
+          '--pm-card-y',
+          `${y}px`
+        );
+
+      }
+    );
+
+
+    card.addEventListener(
+      'pointerleave',
+      () => {
+
+        card.style.setProperty(
+          '--pm-card-x',
+          '50%'
+        );
+
+
+        card.style.setProperty(
+          '--pm-card-y',
+          '30%'
+        );
+
+      }
+    );
+
+  }
+
+
+  /*
+   * =============================================================
+   * PASSWORD BUTTON
+   * =============================================================
+   *
+   * app.js lama sebenarnya sudah menangani
+   * passwordInput/passwordToggle.
+   *
+   * Kode ini hanya menyinkronkan aria-label
+   * supaya accessibility tetap benar.
+   */
+  const password =
+    document.querySelector(
+      '#passwordInput'
+    );
+
+  const passwordToggle =
+    document.querySelector(
+      '#passwordToggle'
+    );
+
+
+  passwordToggle?.addEventListener(
+    'click',
+    () => {
+
+      window.setTimeout(
+        () => {
+
+          if (!password) {
+            return;
+          }
+
+
+          passwordToggle.setAttribute(
+            'aria-label',
+
+            password.type === 'password'
+              ?
+              'Tampilkan password'
+              :
+              'Sembunyikan password'
+          );
+
+        },
+
+        0
+      );
+
+    }
+  );
+
+})();
